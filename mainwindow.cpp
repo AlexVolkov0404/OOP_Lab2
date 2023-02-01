@@ -6,13 +6,13 @@
 
 MainWindow::MainWindow()
 {
-    doNotLbl = new QLabel("Do not disturbe mode");
-    doNotCheckBox = new QCheckBox();
-    doNotCheckBox->setChecked(false);
-    doNotDisturb = false;
+//    doNotLbl = new QLabel("Do not disturbe mode");
+//    doNotCheckBox = new QCheckBox();
+//    doNotCheckBox->setChecked(false);
+//    doNotDisturb = false;
 
     tmp = "\0";
-    temp.setHMS(0,0,0);
+    temp.setHMS(0,0,0);  
     setToolBar();
 
     QLabel *tmr = new QLabel("Nearest Timer",this);
@@ -51,6 +51,7 @@ MainWindow::MainWindow()
 
 
     connect(listW, &QListWidget::currentRowChanged, this, &MainWindow::showDescription);
+   // listW->clearSelection();
     connect(listB, &QListWidget::currentRowChanged, this, &MainWindow::showDescriptionAlarm);
     startTimer(1000);
 
@@ -65,114 +66,71 @@ void MainWindow::timerEvent(QTimerEvent *e)
 {
     Q_UNUSED(e);
 
-//    if(!timers.empty()){
-//        textDesk = listW->selectedItems().first()->text();
-//        for(int i = 0; i < timers.size(); i++){
-//            if(textDesk == timers[i].getTime().toString()){
-//                mainTimerDescriptionLbl->setText(timers[i].getDesc());
-//            }
-//        }
-//}
-    //else mainTimerDescriptionLbl->setText(" ");
-
     figure= QString::number(timers.size());
-
-           QPixmap pixmap(25,25);
-           pixmap.fill(Qt::transparent);
-           QPainter painter(&pixmap);
-          // painter.setBrush(QBrush(Qt::yellow));
-           //painter.drawEllipse(0, 0, 22, 22);
-           painter.drawPixmap(0, 0,25,25, QPixmap(":/Resources/clock.jpg"));
-           painter.setPen(QPen(Qt::white, 1, Qt::SolidLine, Qt::SquareCap));
-           painter.setBrush(QBrush(Qt::red));
-           if(timers.size()>0){
-               painter.drawEllipse(10, 10, 16, 16);
-               QFont font1("MS Shell Dlg 2", 8);
-              // font.setBold(true);
-               painter.setFont(font1);
-               painter.drawText(QRect(10, 13, 18, 13), Qt::AlignCenter, figure);
-           }
-
-           painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-           painter.end();
-
-            setWindowIcon(QIcon(pixmap));
+    QPixmap pixmap(25,25);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);    
+    painter.drawPixmap(0, 0,25,25, QPixmap(":/Resources/clock.jpg"));
+    painter.setPen(QPen(Qt::white, 1, Qt::SolidLine, Qt::SquareCap));
+    painter.setBrush(QBrush(Qt::red));
+    if(timers.size()>0){
+        painter.drawEllipse(10, 10, 16, 16);
+        QFont font1("MS Shell Dlg 2", 8);       
+        painter.setFont(font1);
+        painter.drawText(QRect(10, 13, 18, 13), Qt::AlignCenter, figure);
+    }
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    painter.end();
+    setWindowIcon(QIcon(pixmap));
 
 
     timelbl->setText(QTime::currentTime().toString());
-    if(timers.size() > 0){
-         //mainTimerDescriptionLbl->setText(timers[listW->selectedItems()].getDesc());
-//        textDesk = listW->selectedItems().first()->text();
-//        for(int j = 0; j < timers.size(); j++){
-//            if(textDesk == timers[j].getTime().toString()){
-//                mainTimerDescriptionLbl->setText(timers[j].getDesc());
-//            }
-//        }
-        for(int i = 0; i < timers.size(); i++){
+    if(timers.size() > 0 && listW->count()>0){
 
+        for(int i = 0; i < timers.size(); i++){
             timers[i].setTime(timers[i].getTime().addMSecs(-500));
             listW->item(i)->setText(timers[i].getTime().toString());
         }
-        if(!stoppedTimersPositions.empty()){
-            for(int i = 0; i < stoppedTimersPositions.size(); i++){
-                timers[stoppedTimersPositions[i]].setTime(timers[stoppedTimersPositions[i]].getTime().addMSecs(500));
-            }
-        }
+//        if(!stoppedTimersPositions.empty()){
+//            for(int i = 0; i < stoppedTimersPositions.size(); i++){
+//                timers[stoppedTimersPositions[i]].setTime(timers[stoppedTimersPositions[i]].getTime().addMSecs(500));
+//            }
+//        }
         mainTimerLbl->setText(timers[0].getTime().toString());
-       //  mainTimerDescriptionLbl->setText(timers[listW->SelectedClicked].getDesc());
-
-        if(timers[0].getTime() == temp){
-            timeoutWindow();
-            timers.removeAt(0);
-            delete listW->takeItem(0);
-        }
 
         for(int i = 0; i < timers.size(); i++){
             if(timers[i].getTime() == temp){
-                stoppedTimersPositions.append(i);
+                timeoutwindow(timers[i].getDesc(),timers[i].getPaths());
+//                timeoutwindow wind(timers[i].getDesc(),timers[i].getPaths());
+//                if(settings.infoOk()==false)  wind.signalsound(timers[i].getDesc(),timers[i].getPaths());
+                mainTimerDescriptionLbl->setText("\0");
+                //stoppedTimersPositions.append(i);
                 timers.removeAt(i);
-                delete listW->takeItem(i);
+                listW->clearSelection();
+                QListWidgetItem *it = listW->takeItem(i);
+                   delete it;
             }
-
         }
-
-
-    } else {
-        //mainTimerDescriptionLbl->setText("\0");
     }
 
-    if(alarms.size() > 0){
-     qDebug() << QTime::currentTime() << Qt::endl;
-     qDebug() << alarms[0].getTimeAlarm() << Qt::endl;
-        if(alarms[0].getTimeAlarm().hour() == QTime::currentTime().hour()&&alarms[0].getTimeAlarm().minute() == QTime::currentTime().minute()&&alarms[0].getTimeAlarm().second() == QTime::currentTime().second()){
-            timeoutWindowAlarm();
-            alarms.removeAt(0);
-            delete listB->takeItem(0);
-        }
+    if(alarms.size() > 0 && listB->count()>0){
+        qDebug() << QTime::currentTime() << Qt::endl;
+        qDebug() << alarms[0].getTimeAlarm() << Qt::endl;
 
         for(int i = 0; i < alarms.size(); i++){
             if(alarms[i].getTimeAlarm().hour() == QTime::currentTime().hour()&&alarms[i].getTimeAlarm().minute() == QTime::currentTime().minute()&&alarms[i].getTimeAlarm().second() == QTime::currentTime().second()){
                 //timeoutWindowAlarm();
-                stoppedAlarmsPositions.append(i);
+                //timeoutwindow wind(alarms[0].getDesc(),alarms[0].getPaths());
+                //if(settings.infoOk()==false)  wind.signalsound();
+                //stoppedAlarmsPositions.append(i);
                 alarms.removeAt(i);
-                delete listB->takeItem(i);
+                QListWidgetItem *it2 = listB->takeItem(i);
+                   delete it2;
             }
         }
     }
 }
 
-
-
-QList<Timer> MainWindow::getTimers()
-{
-    if(timers.size() > 0){
-        for(int i = 0; i < timers.size(); i++){
-            qDebug() << timers[i].getTime();
-            qDebug() << timers[i].getDesc() << Qt::endl;
-        }
-        return timers;
-    } else qDebug() << "No!" << Qt::endl;
-}
 
 void MainWindow::setToolBar()
 {
@@ -183,9 +141,10 @@ void MainWindow::setToolBar()
     QPixmap infopix(":/Resources/info.png");
    // QPixmap stoppix(":/Resources/stop.jpg");
     QPixmap currenttime(":/Resources/clock.jpg");
+
     toolbar = addToolBar("Main Toolbar");
     toolbar->setFixedHeight(40);
-    toolbar->setStyleSheet("QToolBar{spacing:10px;}");   
+    toolbar->setStyleSheet("QToolBar{spacing:10px;}");
     toolbar->addSeparator();
 
     QMenu *file;
@@ -224,32 +183,31 @@ void MainWindow::setToolBar()
     toolbar->addSeparator();
 
     toolbar->addAction(QIcon(currenttime),"Current time: ");
-   // QLabel *lbl = new QLabel("Current time: ");
-
-    //toolbar->addWidget(lbl);
-
-    //QAction *updateDescription = toolbar->addAction("updateDescription");
-    //connect(updateDescription,&QAction::triggered, this, &MainWindow::showDescription);
-
     timelbl = new QLabel(QTime::currentTime().toString());
     startTimer(1000);
     toolbar->addWidget(timelbl);
 
-   // connect(stop, &QAction::triggered, this, &MainWindow::stopTimer);
-    connect(add, &QAction::triggered, this, &MainWindow::addTimer);
+   // connect(add, &QAction::triggered, this, &MainWindow::addTimer);
     connect(addAlarm, &QAction::triggered, this, &MainWindow::addAlarm);
-    connect(edit, &QAction::triggered, this, &MainWindow::toEditWindow);
+
+   // connect(edit, &QAction::triggered, this, &MainWindow::toEditWindow);
      connect(editAlarm, &QAction::triggered, this, &MainWindow::toEditWindowAlarm);
+
     connect(dlete, &QAction::triggered, this, &MainWindow::deleteTimer);
     connect(dleteAlarm, &QAction::triggered, this, &MainWindow::deleteAlarm);
     connect(dleteAll, &QAction::triggered, this, &MainWindow::deleteAllTimers);
     connect(dleteAlarmAll, &QAction::triggered, this, &MainWindow::deleteAllAlarms);
-    connect(info, &QAction::triggered, this, &MainWindow::settingsWindowSlot);
 
+    connect(info, &QAction::triggered,&settings,&Settings::setsettingswindow);
+
+
+
+    connect(edit, &QAction::triggered, &constructr, [=](){econstructor.showEditWindow(&timers,listW);});
+    connect(add, &QAction::triggered, &constructr, [=](){constructr.showConstructorWindow(&timers,listW);});
 
 
 }
-
+//done1
 void MainWindow::addTimer()
 {
     addWindow = new QWidget();
@@ -298,7 +256,6 @@ void MainWindow::addTimer()
     connect(addBtn, &QPushButton::clicked, this, &MainWindow::addTimerBtnClicked);
     addWindow->show();
 }
-
 void MainWindow::addAlarm()
 {
     addWindowAlarm = new QWidget();
@@ -346,83 +303,13 @@ void MainWindow::addAlarm()
     connect(addBtnAlarm, &QPushButton::clicked, this, &MainWindow::addAlarmBtnClicked);
     addWindowAlarm->show();
 }
+//done1
+//
 
-void MainWindow::timeoutWindow()
-{
-    auto audioOutput = new QAudioOutput(this);
-    player = new QMediaPlayer(this);
-    player->setSource( QUrl("qrc:/Resources/AlarmClock.wav"));    
-    player->setAudioOutput(audioOutput);
-    audioOutput->setVolume(50);
-    if(doNotDisturb==false) player->play();
-
-
-    QProcess *process = new QProcess(this);
-    QString file = timers[0].getPaths();
-    process->start(file);
-
-    QVBoxLayout *vbox = new QVBoxLayout();
-
-
-    signalWindow = new QWidget();
-    signalWindow->resize(250,200);
-    signalWindow->setObjectName("TIMEOUT!");
-    timeoutLbl = new QLabel("Timeout! There is description:");
-    timeoutDescLbl = new QTextEdit(this);
-    timeoutDescLbl->setText(timers[0].getDesc());
-    timeoutDescLbl->setReadOnly(true);
-    timeoutOKBtn = new QPushButton("OK", this);
-
-    vbox->addWidget(timeoutLbl);
-    vbox->addWidget(timeoutDescLbl);
-    vbox->addWidget(timeoutOKBtn);
-
-    connect(timeoutOKBtn, &QPushButton::clicked, signalWindow, &QPushButton::close);
-
-    signalWindow->show();
-    signalWindow->setLayout(vbox);
-
-}
-void MainWindow::timeoutWindowAlarm()
-{
-    auto audioOutputAlarm = new QAudioOutput(this);
-    playerAlarm = new QMediaPlayer(this);
-    playerAlarm->setSource( QUrl("qrc:/Resources/AlarmClock.wav"));
-    playerAlarm->setAudioOutput(audioOutputAlarm);
-    audioOutputAlarm->setVolume(50);
-   if(doNotDisturb==false) playerAlarm->play();
-
-    QProcess *processAlarm = new QProcess(this);
-    QString fileAlarm = alarms[0].getPathsAlarm();
-    processAlarm->start(fileAlarm);
-
-    QVBoxLayout *vboxAlarm = new QVBoxLayout();
-
-
-    signalWindowAlarm = new QWidget();
-    signalWindowAlarm->resize(250,200);
-    signalWindowAlarm->setObjectName("TIMEOUT!");
-    timeoutLblAlarm = new QLabel("Timeout! There is description:");
-    timeoutDescLblAlarm = new QTextEdit(this);
-    timeoutDescLblAlarm->setText(alarms[0].getDescAlarm());
-    timeoutDescLblAlarm->setReadOnly(true);
-    timeoutOKBtnAlarm = new QPushButton("OK", this);
-
-    vboxAlarm->addWidget(timeoutLblAlarm);
-    vboxAlarm->addWidget(timeoutDescLblAlarm);
-    vboxAlarm->addWidget(timeoutOKBtnAlarm);
-
-    connect(timeoutOKBtnAlarm, &QPushButton::clicked, signalWindowAlarm, &QPushButton::close);
-
-    signalWindowAlarm->show();
-    signalWindowAlarm->setLayout(vboxAlarm);
-
-
-}
-
+//done2
 void MainWindow::toEditWindow()
 {
-    if(listW->currentRow()>=0){
+    if(listW->currentRow()>=0&&listW ->item(listW->currentRow())->isSelected()){
         if(!timers.empty()){
             tmp = listW->selectedItems().first()->text();
             if(tmp == "\0"){
@@ -451,6 +338,7 @@ void MainWindow::toEditWindow()
         editDescLbl = new QLabel("Edit description:");
         editTimeEdit = new QTimeEdit();
         editTimeEdit->setDisplayFormat("hh:mm:ss");
+        editTimeEdit->setTime(timers[positionToEdit].getTime());
         editDescEdit = new QTextEdit();
         editTimerBtn = new QPushButton("OK");
 
@@ -471,7 +359,7 @@ void MainWindow::toEditWindow()
 
 }
 void MainWindow::toEditWindowAlarm(){
-    if(listB->currentRow()>=0){
+    if(listB->currentRow()>=0&&listB->item(listB->currentRow())->isSelected()){
         if(!alarms.empty()){
             tmpAlarm = listB->selectedItems().first()->text();
             if(listB->currentRow()<0){
@@ -518,7 +406,10 @@ void MainWindow::toEditWindowAlarm(){
         return;
     }
 }
+//done2
 
+//
+//done1
 void MainWindow::addTimerBtnClicked()
 {
     QTime time(addTimeEdit->time().hour(),addTimeEdit->time().minute(),addTimeEdit->time().second());
@@ -544,13 +435,13 @@ void MainWindow::addTimerBtnClicked()
     //updateTimersListW();
     qDebug()<<"timers.size()";
 }
-
 void MainWindow::addAlarmBtnClicked()
 {
     QTime timeAlarm(addTimeEditAlarm->time().hour(),addTimeEditAlarm->time().minute(),addTimeEditAlarm->time().second());
     Alarm alarm(timeAlarm,addTextEditAlarm->toPlainText(),addPathsTextEditAlarm->toPlainText());
     for(int i = 0; i < amountTimerAlarm->value(); i++){
         alarms.insert(alarms.size(),alarm);
+
         listB->addItem(alarm.getTimeAlarm().toString());
     }
     addWindowAlarm->close();
@@ -565,6 +456,8 @@ void MainWindow::addAlarmBtnClicked()
     //updateTimersListW();
    // updateAlarmsListB();
 }
+//done1
+//
 
 void MainWindow::stopTimer()
 {
@@ -586,6 +479,7 @@ void MainWindow::stopTimer()
 
 }
 
+//done2
 void MainWindow::editTimerBtnClicked()
 {
     QTime time(editTimeEdit->time().hour(),editTimeEdit->time().minute(),editTimeEdit->time().second());
@@ -611,6 +505,7 @@ void MainWindow::editAlarmBtnClicked(){
    listB->clearSelection();
     editWindowAlarm->close();
 }
+//done2
 
 void MainWindow::deleteTimer()
 {
@@ -666,18 +561,12 @@ void MainWindow::deleteAlarm(){
 
 void MainWindow::deleteAllTimers()
 {
-
     if(timers.empty()){
-
-
-        QMessageBox::warning(this,tr("Timers is empty"),tr("Timers is empty"));
+        QMessageBox::warning(this,tr("Timers is empty"),tr("Timers is empty"));       
         return;
-
     }
     else{
-
         timers.clear();
-
         listW->blockSignals(true);
         listW->clear();
         listW->blockSignals(false);
@@ -690,53 +579,47 @@ void MainWindow::deleteAllTimers()
 
 void MainWindow::deleteAllAlarms(){
     if(alarms.empty()){
-
-
         QMessageBox::warning(this,tr("Alarms is empty"),tr("Alarms is empty"));
         return;
-
     }
     else{
-
         alarms.clear();
-
         listB->blockSignals(true);
         listB->clear();
         listB->blockSignals(false);
-
         mainTimerLbl->setText("00:00:00");
         //mainTimerDescriptionLbl->setText("\0");
     }
-
 }
 
-void MainWindow::settingsWindowSlot()
-{
-    settingsWindow = new QWidget;
-    QVBoxLayout *vbox = new QVBoxLayout();
-    QHBoxLayout *hbox = new QHBoxLayout();
+//void MainWindow::settingsWindowSlot()
+//{
+//    settingsWindow = new QWidget;
+//    QVBoxLayout *vbox = new QVBoxLayout();
+//    QHBoxLayout *hbox = new QHBoxLayout();
 
-    infoOKBtn = new QPushButton("OK");
+//    infoOKBtn = new QPushButton("OK");
 
-    hbox->addWidget(doNotLbl);
-    hbox->addWidget(doNotCheckBox);
-    vbox->addLayout(hbox);
-    vbox->addWidget(infoOKBtn);
+//    hbox->addWidget(doNotLbl);
+//    hbox->addWidget(doNotCheckBox);
+//    vbox->addLayout(hbox);
+//    vbox->addWidget(infoOKBtn);
 
-    settingsWindow->setLayout(vbox);
-    settingsWindow->setObjectName("Settings");
-    settingsWindow->setFixedSize(250,150);
-    settingsWindow->show();
+//    settingsWindow->setLayout(vbox);
+//    settingsWindow->setObjectName("Settings");
+//    settingsWindow->setFixedSize(250,150);
+//    settingsWindow->show();
 
-    connect(infoOKBtn, &QPushButton::clicked, this, &MainWindow::infoOKBtnClicked);
-}
+//    connect(infoOKBtn, &QPushButton::clicked, this, &MainWindow::infoOKBtnClicked);
+//}
 
-void MainWindow::infoOKBtnClicked()
-{
-    doNotDisturb = doNotCheckBox->isChecked();
-    settingsWindow->close();
-}
+//void MainWindow::infoOKBtnClicked()
+//{
+//    doNotDisturb = doNotCheckBox->isChecked();
+//    settingsWindow->close();
+//}
 
+//done1
 void MainWindow::timersSort() {
     if(timers.size() > 1) {
         int i, j;
@@ -750,9 +633,11 @@ void MainWindow::timersSort() {
         }
     } else return;
 }
+//done1
 
 void MainWindow::updateTimersListW()
 {
+    //constructr.addNewTimer(timers);
  qDebug()<<"hi";
     listW->clear();
 
@@ -771,17 +656,62 @@ void MainWindow::updateAlarmsListB()
     }
 }
 void MainWindow::showDescription(){
-    //listW->setEnabled(true);
-    mainTimerDescriptionLbl->setText("\0");
-     listB->clearSelection();
-      mainTimerDescriptionLbl->setText(timers[listW->currentRow()].getDesc());
-
+    if(listW->count()>0 && timers.size()>0){
+        mainTimerDescriptionLbl->setText("\0");
+        if(listW->count()== timers.size())   mainTimerDescriptionLbl->setText(timers[listW->currentRow()].getDesc());
+        listW->clearSelection();
+        listB->clearSelection();
+    }
+    else   mainTimerDescriptionLbl->setText("\0");
 }
 void MainWindow::showDescriptionAlarm(){
-    //listB->setEnabled(true);
+    //listW->blockSignals(true);
+   // listB->setEnabled(true);
     mainTimerDescriptionLbl->setText("\0");
-     listW->clearSelection();
-      mainTimerDescriptionLbl->setText(alarms[listB->currentRow()].getDescAlarm());
 
+      mainTimerDescriptionLbl->setText(alarms[listB->currentRow()].getDescAlarm());
+      listW->clearFocus();
+
+       listB->clearSelection();
+      // listB->setEnabled(false);
+      // listB->setEnabled(true);
+       // listW->blockSignals(false);
 }
 
+
+
+
+
+
+
+
+void MainWindow::timeoutwindow(QString description,QString paths){
+//    this->description=description;
+//    this->paths=paths;
+    QProcess *process = new QProcess();
+    QString file = paths;
+    process->start(file);
+    QVBoxLayout *vbox = new QVBoxLayout();
+    signalWindow = new QWidget();
+    signalWindow->resize(250,200);
+    signalWindow->setObjectName("TIMEOUT!");
+    timeoutLbl = new QLabel("Timeout! There is description:");
+    timeoutDescLbl = new QTextEdit();
+    timeoutDescLbl->setText(description);
+    timeoutDescLbl->setReadOnly(true);
+    timeoutOKBtn = new QPushButton("OK");
+    vbox->addWidget(timeoutLbl);
+    vbox->addWidget(timeoutDescLbl);
+    vbox->addWidget(timeoutOKBtn);
+
+    signalWindow->show();
+    signalWindow->setLayout(vbox);
+     qDebug()<<"timers.size()1111111111111111";
+    auto audioOutput = new QAudioOutput();
+    player = new QMediaPlayer();
+    player->setSource( QUrl("qrc:/Resources/AlarmClock.wav"));
+    player->setAudioOutput(audioOutput);
+    audioOutput->setVolume(50);
+  /*  if(settings.infoOk()==false)*/ player->play();
+   connect(timeoutOKBtn, &QPushButton::clicked, signalWindow, &QPushButton::close);
+}

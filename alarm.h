@@ -3,9 +3,11 @@
 #include <QTime>
 #include <QLabel>
 #include <QTime>
+#include <timer.h>
 
-class Alarm
+class Alarm : public Timer
 {
+private:
     QTime timeAlarm;
     QString descriptionAlarm;
     QString pathsAlarm;

@@ -1,7 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include "editconstructor.h"
 #include "timer.h"
 #include "alarm.h"
+#include "timeoutwindow.h"
+#include "settings.h"
+#include "timerconstructor.h"
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QHBoxLayout>
@@ -32,6 +37,11 @@
 #include <QShortcut>
 #include <QSpinBox>
 #include <QMenuBar>
+#include <QSignalMapper>
+
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QString>
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -40,25 +50,25 @@ public:
     QTime temp;
     QTimer* alarm;
 private:
- QMediaPlayer *player;
- QMediaPlayer *playerAlarm;
-  QString figure;
-  QString textDesk;
-//Toolbar
+    QString figure;
+    QString textDesk;
+    //Toolbar
     QToolBar *toolbar;
     QMenuBar*menubar;
     QSystemTrayIcon* m_systemTrayIcon;
     void setToolBar();
     QLabel *timelbl;
-    //QLabel *alarmlbl;
-//Main window widgets
+    //Main window widgets
     QLabel *mainTimerLbl;
     QTextEdit *mainTimerDescriptionLbl;
     QListWidget *listW;
     QListWidget *listB;
     QList<Timer> timers;
+
+    EditConstructor econstructor;
+    TimerConstructor constructr;
     QList<Alarm> alarms;
-//Add window
+    //Add window
     QWidget *addWindow;
     QWidget *addWindowAlarm;
     QSpinBox*amountTimer;
@@ -69,61 +79,53 @@ private:
     QLabel *addDescLblAlarm;
     QLabel *addCountLbl;
     QLabel *addCountLblAlarm;
-     QLabel *addPathsLbl;
-      QLabel *addPathsLblAlarm;
+    QLabel *addPathsLbl;
+    QLabel *addPathsLblAlarm;
     QTimeEdit *addTimeEdit;
     QTimeEdit *addTimeEditAlarm;
     QTextEdit *addTextEdit;
-     QTextEdit *addTextEditAlarm;
+    QTextEdit *addTextEditAlarm;
     QTextEdit *addCountTextEdit;
-     QTextEdit *addCountTextEditAlarm;
+    QTextEdit *addCountTextEditAlarm;
     QTextEdit *addPathsTextEdit;
-      QTextEdit *addPathsTextEditAlarm;
+    QTextEdit *addPathsTextEditAlarm;
     void addTimer();
     void addAlarm();
-//Signal Window
-   QWidget *signalWindow;
-   QWidget *signalWindowAlarm;
-   QLabel *timeoutLbl;
-    QLabel *timeoutLblAlarm;
-   QTextEdit *timeoutDescLbl;
-    QTextEdit *timeoutDescLblAlarm;
-   QPushButton *timeoutOKBtn;
-   QPushButton *timeoutOKBtnAlarm;
-   void timeoutWindow();
-   void timeoutWindowAlarm();
-//Edit Window
-   QWidget *editWindow;
+    //Edit Window
+    QWidget *editWindow;
     QWidget *editWindowAlarm;
-   QLabel *editTimeLbl;
-   QLabel *editTimeLblAlarm;
-   QLabel *editDescLbl;
+    QLabel *editTimeLbl;
+    QLabel *editTimeLblAlarm;
+    QLabel *editDescLbl;
     QLabel *editDescLblAlarm;
-   QTimeEdit *editTimeEdit;
+    QTimeEdit *editTimeEdit;
     QTimeEdit *editTimeEditAlarm;
-   QTextEdit *editDescEdit;
-   QTextEdit *editDescEditAlarm;
-   QPushButton *editTimerBtn;
-   QPushButton *editTimerBtnAlarm;
-   void toEditWindow();
-   void toEditWindowAlarm();
-   Timer buffer;
-   Alarm bufferAlarm;
-   QString tmp;
-   QString tmpAlarm;
+    QTextEdit *editDescEdit;
+    QTextEdit *editDescEditAlarm;
+    QPushButton *editTimerBtn;
+    QPushButton *editTimerBtnAlarm;
+    void toEditWindow();
+    void toEditWindowAlarm();
+    Timer buffer;
+    Alarm bufferAlarm;
+    QString tmp;
+    QString tmpAlarm;
     QString curTime;
-     QString curTimeAlarm;
-   int positionToEdit;
-   int positionToEditAlarm;
-//Info Window
-   QWidget *settingsWindow;
-   QLabel *doNotLbl;
-   QCheckBox *doNotCheckBox;
-   QPushButton *infoOKBtn;
-   bool doNotDisturb;
-//To Stop
-   QVector<int> stoppedTimersPositions;
-   QVector<int> stoppedAlarmsPositions;
+    QString curTimeAlarm;
+    int positionToEdit;
+    int positionToEditAlarm;
+    Settings settings;
+    //To Stop
+    QVector<int> stoppedTimersPositions;
+    QVector<int> stoppedAlarmsPositions;
+
+    QWidget *signalWindow;
+    QLabel *timeoutLbl;
+    QTextEdit *timeoutDescLbl;
+    QPushButton *timeoutOKBtn;
+    QVBoxLayout *vbox;
+    QMediaPlayer *player;
+
 
 private slots:
     void addTimerBtnClicked();
@@ -135,18 +137,17 @@ private slots:
     void deleteAlarm();
     void deleteAllTimers();
     void deleteAllAlarms();
-    void settingsWindowSlot();
-    void infoOKBtnClicked();
     void showDescription();
     void showDescriptionAlarm();
-
+   // void updateTimersListW();
 private:
     void timerEvent(QTimerEvent *e);
     void alarmEvent(QTimerEvent *e);
-    QList<Timer> getTimers();
     void timersSort();
     void updateTimersListW();
     void updateAlarmsListB();
+    void timeoutwindow(QString description,QString paths);
+
 
 };
 
