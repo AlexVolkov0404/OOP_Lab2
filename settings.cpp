@@ -2,10 +2,8 @@
 
 Settings::Settings()
 {
-    doNotLbl = new QLabel("Do not disturbe mode");
-    doNotCheckBox = new QCheckBox();
-    doNotCheckBox->setChecked(false);
-    doNotDisturb = false;
+
+
 }
 bool Settings :: infoOk(){
     doNotDisturb = doNotCheckBox->isChecked();
@@ -16,8 +14,13 @@ void Settings::setsettingswindow(){
     settingsWindow = new QWidget;
     QVBoxLayout *vbox = new QVBoxLayout();
     QHBoxLayout *hbox = new QHBoxLayout();
-
+    doNotLbl = new QLabel("Do not disturbe mode");
+    doNotCheckBox = new QCheckBox();
     infoOKBtn = new QPushButton("OK");
+
+    doNotLbl = new QLabel("Do not disturbe mode");
+    doNotCheckBox = new QCheckBox();
+    doNotCheckBox->setChecked(false);
 
     hbox->addWidget(doNotLbl);
     hbox->addWidget(doNotCheckBox);
@@ -27,7 +30,10 @@ void Settings::setsettingswindow(){
     settingsWindow->setLayout(vbox);
     settingsWindow->setObjectName("Settings");
     settingsWindow->setFixedSize(250,150);
-    settingsWindow->show();
+//    settingsWindow->show();
 
     connect(infoOKBtn, &QPushButton::clicked, this, &Settings::infoOk);
+}
+void Settings::showSettingsWindow(){
+    settingsWindow->show();
 }

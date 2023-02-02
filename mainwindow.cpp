@@ -14,7 +14,7 @@ MainWindow::MainWindow()
     tmp = "\0";
     temp.setHMS(0,0,0);  
     setToolBar();
-
+    settings.setsettingswindow();
     QLabel *tmr = new QLabel("Nearest Timer",this);
     tmr->setGeometry(50,85,100,20);
     mainTimerLbl = new QLabel(this);
@@ -86,7 +86,6 @@ void MainWindow::timerEvent(QTimerEvent *e)
 
     timelbl->setText(QTime::currentTime().toString());
     if(timers.size() > 0 && listW->count()>0){
-
         for(int i = 0; i < timers.size(); i++){
             timers[i].setTime(timers[i].getTime().addMSecs(-500));
             listW->item(i)->setText(timers[i].getTime().toString());
@@ -100,9 +99,9 @@ void MainWindow::timerEvent(QTimerEvent *e)
 
         for(int i = 0; i < timers.size(); i++){
             if(timers[i].getTime() == temp){
-                timeoutwindow(timers[i].getDesc(),timers[i].getPaths());
-//                timeoutwindow wind(timers[i].getDesc(),timers[i].getPaths());
-//                if(settings.infoOk()==false)  wind.signalsound(timers[i].getDesc(),timers[i].getPaths());
+               // timeoutwindow(timers[i].getDesc(),timers[i].getPaths());
+                wind.signalsound(timers[i].getDesc(),timers[i].getPaths());
+               if(settings.infoOk()==false) wind.sound();
                 mainTimerDescriptionLbl->setText("\0");
                 //stoppedTimersPositions.append(i);
                 timers.removeAt(i);
@@ -113,12 +112,17 @@ void MainWindow::timerEvent(QTimerEvent *e)
         }
     }
 
+
     if(alarms.size() > 0 && listB->count()>0){
         qDebug() << QTime::currentTime() << Qt::endl;
-        qDebug() << alarms[0].getTimeAlarm() << Qt::endl;
-
+        qDebug() << alarms[0].getTime() << Qt::endl;
         for(int i = 0; i < alarms.size(); i++){
-            if(alarms[i].getTimeAlarm().hour() == QTime::currentTime().hour()&&alarms[i].getTimeAlarm().minute() == QTime::currentTime().minute()&&alarms[i].getTimeAlarm().second() == QTime::currentTime().second()){
+            listB->item(i)->setText(alarms[i].getTime().toString());
+        }
+        for(int i = 0; i < alarms.size(); i++){
+            if(alarms[i].getTime().hour() == QTime::currentTime().hour()&&alarms[i].getTime().minute() == QTime::currentTime().minute()&&alarms[i].getTime().second() == QTime::currentTime().second()){
+                wind.signalsound(alarms[i].getDesc(),alarms[i].getPaths());
+               if(settings.infoOk()==false) wind.sound();
                 //timeoutWindowAlarm();
                 //timeoutwindow wind(alarms[0].getDesc(),alarms[0].getPaths());
                 //if(settings.infoOk()==false)  wind.signalsound();
@@ -188,22 +192,33 @@ void MainWindow::setToolBar()
     toolbar->addWidget(timelbl);
 
    // connect(add, &QAction::triggered, this, &MainWindow::addTimer);
-    connect(addAlarm, &QAction::triggered, this, &MainWindow::addAlarm);
+   // connect(addAlarm, &QAction::triggered, this, &MainWindow::addAlarm);
 
    // connect(edit, &QAction::triggered, this, &MainWindow::toEditWindow);
-     connect(editAlarm, &QAction::triggered, this, &MainWindow::toEditWindowAlarm);
+    // connect(editAlarm, &QAction::triggered, this, &MainWindow::toEditWindowAlarm);
 
-    connect(dlete, &QAction::triggered, this, &MainWindow::deleteTimer);
-    connect(dleteAlarm, &QAction::triggered, this, &MainWindow::deleteAlarm);
-    connect(dleteAll, &QAction::triggered, this, &MainWindow::deleteAllTimers);
-    connect(dleteAlarmAll, &QAction::triggered, this, &MainWindow::deleteAllAlarms);
+    //connect(dlete, &QAction::triggered, this, &MainWindow::deleteTimer);
+    //connect(dleteAlarm, &QAction::triggered, this, &MainWindow::deleteAlarm);
 
-    connect(info, &QAction::triggered,&settings,&Settings::setsettingswindow);
+    //connect(dleteAll, &QAction::triggered, this, &MainWindow::deleteAllTimers);
+   // connect(dleteAlarmAll, &QAction::triggered, this, &MainWindow::deleteAllAlarms);
+
+    connect(info, &QAction::triggered,&settings,&Settings::showSettingsWindow);
 
 
 
-    connect(edit, &QAction::triggered, &constructr, [=](){econstructor.showEditWindow(&timers,listW);});
+    connect(edit, &QAction::triggered, &econstructor, [=](){econstructor.showEditWindow(&timers,listW);});
     connect(add, &QAction::triggered, &constructr, [=](){constructr.showConstructorWindow(&timers,listW);});
+    connect(dlete,&QAction::triggered,&delet,[=](){delet.delChosenTimer(&timers,listW,mainTimerLbl,mainTimerDescriptionLbl);});
+    connect(dleteAll,&QAction::triggered,&delet,[=](){delet.delAllTimers(&timers,listW,mainTimerLbl,mainTimerDescriptionLbl);});
+
+    connect(editAlarm, &QAction::triggered, &econstructor, [=](){econstructor.showEditWindow(&alarms,listB);});
+    connect(addAlarm, &QAction::triggered, &constructr, [=](){constructr.showConstructorWindow(&alarms,listB);});
+    connect(dleteAlarm,&QAction::triggered,&delet,[=](){delet.delChosenTimer(&alarms,listB,mainTimerLbl,mainTimerDescriptionLbl);});
+    connect(dleteAlarmAll,&QAction::triggered,&delet,[=](){delet.delAllTimers(&alarms,listB,mainTimerLbl,mainTimerDescriptionLbl);});
+
+
+
 
 
 }
@@ -256,53 +271,53 @@ void MainWindow::addTimer()
     connect(addBtn, &QPushButton::clicked, this, &MainWindow::addTimerBtnClicked);
     addWindow->show();
 }
-void MainWindow::addAlarm()
-{
-    addWindowAlarm = new QWidget();
-    addWindowAlarm->resize(250,200);
-    addWindowAlarm->setWindowTitle("New Alarm");
+//void MainWindow::addAlarm()
+//{
+//    addWindowAlarm = new QWidget();
+//    addWindowAlarm->resize(250,200);
+//    addWindowAlarm->setWindowTitle("New Alarm");
 
-    addAlarmLbl = new QLabel("Time");
-    addAlarmLbl->setGeometry(20,60,50,20);
+//    addAlarmLbl = new QLabel("Time");
+//    addAlarmLbl->setGeometry(20,60,50,20);
 
-    addTimeEditAlarm = new QTimeEdit();
-    addTimeEditAlarm->setDisplayFormat("hh:mm:ss");
-    addTimeEditAlarm->setGeometry(90,65,100,25);
+//    addTimeEditAlarm = new QTimeEdit();
+//    addTimeEditAlarm->setDisplayFormat("hh:mm:ss");
+//    addTimeEditAlarm->setGeometry(90,65,100,25);
 
-    addDescLblAlarm = new QLabel("Description");
-    addDescLblAlarm->setGeometry(20, 100, 50, 20);
+//    addDescLblAlarm = new QLabel("Description");
+//    addDescLblAlarm->setGeometry(20, 100, 50, 20);
 
-    addTextEditAlarm = new QTextEdit();
-    addTextEditAlarm->setGeometry(90,130,100,150);
+//    addTextEditAlarm = new QTextEdit();
+//    addTextEditAlarm->setGeometry(90,130,100,150);
 
-    addCountLblAlarm = new QLabel("Count of alarms");
-    amountTimerAlarm=new QSpinBox();
-    amountTimerAlarm->setGeometry(90,130,10,150);
-    amountTimerAlarm->setMinimum(1);
+//    addCountLblAlarm = new QLabel("Count of alarms");
+//    amountTimerAlarm=new QSpinBox();
+//    amountTimerAlarm->setGeometry(90,130,10,150);
+//    amountTimerAlarm->setMinimum(1);
 
-    addCountTextEditAlarm = new QTextEdit();
+//    addCountTextEditAlarm = new QTextEdit();
 
-    addPathsLblAlarm = new QLabel("Paths of the program");
-    addPathsTextEditAlarm = new QTextEdit();
+//    addPathsLblAlarm = new QLabel("Paths of the program");
+//    addPathsTextEditAlarm = new QTextEdit();
 
-    QPushButton *addBtnAlarm = new QPushButton("Set Alarm",addWindowAlarm);
+//    QPushButton *addBtnAlarm = new QPushButton("Set Alarm",addWindowAlarm);
 
-    // Добавим на окно менеджер вертикального расположения элементов
-    addWindowAlarm->setLayout(new QVBoxLayout());
-    // А теперь, при помощи менеджера расположения, добавим сами виджеты на окно
-    addWindowAlarm->layout()->addWidget(addAlarmLbl);
-    addWindowAlarm->layout()->addWidget(addTimeEditAlarm);
-    addWindowAlarm->layout()->addWidget(addDescLblAlarm);
-    addWindowAlarm->layout()->addWidget(addTextEditAlarm);
-    addWindowAlarm->layout()->addWidget(addCountLblAlarm);
-    addWindowAlarm->layout()->addWidget(amountTimerAlarm);
-    addWindowAlarm->layout()->addWidget( addPathsLblAlarm);
-    addWindowAlarm->layout()->addWidget(addPathsTextEditAlarm);
-    addWindowAlarm->layout()->addWidget(addBtnAlarm);
+//    // Добавим на окно менеджер вертикального расположения элементов
+//    addWindowAlarm->setLayout(new QVBoxLayout());
+//    // А теперь, при помощи менеджера расположения, добавим сами виджеты на окно
+//    addWindowAlarm->layout()->addWidget(addAlarmLbl);
+//    addWindowAlarm->layout()->addWidget(addTimeEditAlarm);
+//    addWindowAlarm->layout()->addWidget(addDescLblAlarm);
+//    addWindowAlarm->layout()->addWidget(addTextEditAlarm);
+//    addWindowAlarm->layout()->addWidget(addCountLblAlarm);
+//    addWindowAlarm->layout()->addWidget(amountTimerAlarm);
+//    addWindowAlarm->layout()->addWidget( addPathsLblAlarm);
+//    addWindowAlarm->layout()->addWidget(addPathsTextEditAlarm);
+//    addWindowAlarm->layout()->addWidget(addBtnAlarm);
 
-    connect(addBtnAlarm, &QPushButton::clicked, this, &MainWindow::addAlarmBtnClicked);
-    addWindowAlarm->show();
-}
+//    connect(addBtnAlarm, &QPushButton::clicked, this, &MainWindow::addAlarmBtnClicked);
+//    addWindowAlarm->show();
+//}
 //done1
 //
 
@@ -358,54 +373,54 @@ void MainWindow::toEditWindow()
     }
 
 }
-void MainWindow::toEditWindowAlarm(){
-    if(listB->currentRow()>=0&&listB->item(listB->currentRow())->isSelected()){
-        if(!alarms.empty()){
-            tmpAlarm = listB->selectedItems().first()->text();
-            if(listB->currentRow()<0){
-                QMessageBox::warning(this,tr("Choose the alarm"),tr("Please, choose the alarm in Alarms tab"));
-                return;
-            }
-        } else {
-            QMessageBox::warning(this,tr("Alarms is empty"),tr("Alarms is empty"));
-            return;
-        }
+//void MainWindow::toEditWindowAlarm(){
+//    if(listB->currentRow()>=0&&listB->item(listB->currentRow())->isSelected()){
+//        if(!alarms.empty()){
+//            tmpAlarm = listB->selectedItems().first()->text();
+//            if(listB->currentRow()<0){
+//                QMessageBox::warning(this,tr("Choose the alarm"),tr("Please, choose the alarm in Alarms tab"));
+//                return;
+//            }
+//        } else {
+//            QMessageBox::warning(this,tr("Alarms is empty"),tr("Alarms is empty"));
+//            return;
+//        }
 
-        for(int i = 0; i < alarms.size(); i++){
-            if(tmp == alarms[i].getTimeAlarm().toString()){
-                positionToEditAlarm = i;
-                bufferAlarm.setTimeAlarm(alarms[i].getTimeAlarm());
-                bufferAlarm.setDescAlarm(alarms[i].getDescAlarm());
-            }
-        }
-        editWindowAlarm = new QWidget();
-        editWindowAlarm->resize(200,250);
-        editWindowAlarm->setObjectName("Edit Timers");
+//        for(int i = 0; i < alarms.size(); i++){
+//            if(tmp == alarms[i].getTimeAlarm().toString()){
+//                positionToEditAlarm = i;
+//                bufferAlarm.setTimeAlarm(alarms[i].getTimeAlarm());
+//                bufferAlarm.setDescAlarm(alarms[i].getDescAlarm());
+//            }
+//        }
+//        editWindowAlarm = new QWidget();
+//        editWindowAlarm->resize(200,250);
+//        editWindowAlarm->setObjectName("Edit Timers");
 
-        QVBoxLayout *vboxAlarm = new QVBoxLayout();
+//        QVBoxLayout *vboxAlarm = new QVBoxLayout();
 
-        editTimeLblAlarm = new QLabel("Edit time:");
-        editDescLblAlarm = new QLabel("Edit description:");
-        editTimeEditAlarm = new QTimeEdit();
-        editTimeEditAlarm->setDisplayFormat("hh:mm:ss");
-        editDescEditAlarm = new QTextEdit();
-        editTimerBtnAlarm = new QPushButton("OK");
+//        editTimeLblAlarm = new QLabel("Edit time:");
+//        editDescLblAlarm = new QLabel("Edit description:");
+//        editTimeEditAlarm = new QTimeEdit();
+//        editTimeEditAlarm->setDisplayFormat("hh:mm:ss");
+//        editDescEditAlarm = new QTextEdit();
+//        editTimerBtnAlarm = new QPushButton("OK");
 
-        vboxAlarm->addWidget(editTimeLblAlarm);
-        vboxAlarm->addWidget(editTimeEditAlarm);
-        vboxAlarm->addWidget(editDescLblAlarm);
-        vboxAlarm->addWidget(editDescEditAlarm);
-        vboxAlarm->addWidget(editTimerBtnAlarm);
+//        vboxAlarm->addWidget(editTimeLblAlarm);
+//        vboxAlarm->addWidget(editTimeEditAlarm);
+//        vboxAlarm->addWidget(editDescLblAlarm);
+//        vboxAlarm->addWidget(editDescEditAlarm);
+//        vboxAlarm->addWidget(editTimerBtnAlarm);
 
-        connect(editTimerBtnAlarm, &QPushButton::clicked, this, &MainWindow::editAlarmBtnClicked);
-        editWindowAlarm->setLayout(vboxAlarm);
-        editWindowAlarm->show();
-    }
-    else{
-        QMessageBox::warning(this,tr("Choose the alarm"),tr("Please, choose the alarm in Alarms tab"));
-        return;
-    }
-}
+//        connect(editTimerBtnAlarm, &QPushButton::clicked, this, &MainWindow::editAlarmBtnClicked);
+//        editWindowAlarm->setLayout(vboxAlarm);
+//        editWindowAlarm->show();
+//    }
+//    else{
+//        QMessageBox::warning(this,tr("Choose the alarm"),tr("Please, choose the alarm in Alarms tab"));
+//        return;
+//    }
+//}
 //done2
 
 //
@@ -435,27 +450,27 @@ void MainWindow::addTimerBtnClicked()
     //updateTimersListW();
     qDebug()<<"timers.size()";
 }
-void MainWindow::addAlarmBtnClicked()
-{
-    QTime timeAlarm(addTimeEditAlarm->time().hour(),addTimeEditAlarm->time().minute(),addTimeEditAlarm->time().second());
-    Alarm alarm(timeAlarm,addTextEditAlarm->toPlainText(),addPathsTextEditAlarm->toPlainText());
-    for(int i = 0; i < amountTimerAlarm->value(); i++){
-        alarms.insert(alarms.size(),alarm);
+//void MainWindow::addAlarmBtnClicked()
+//{
+//    QTime timeAlarm(addTimeEditAlarm->time().hour(),addTimeEditAlarm->time().minute(),addTimeEditAlarm->time().second());
+//    Alarm alarm(timeAlarm,addTextEditAlarm->toPlainText(),addPathsTextEditAlarm->toPlainText());
+//    for(int i = 0; i < amountTimerAlarm->value(); i++){
+//        alarms.insert(alarms.size(),alarm);
 
-        listB->addItem(alarm.getTimeAlarm().toString());
-    }
-    addWindowAlarm->close();
-    //timersSort();
-    //if(timers.empty()){
-        //mainTimerLbl->setText("00:00:00");
-        //mainTimerDescriptionLbl->setText(" ");
-   // } else {
-       // mainTimerLbl->setText(timers[0].getTime().toString());
-       // mainTimerDescriptionLbl->setText(timers[0].getDesc());
-   // }
-    //updateTimersListW();
-   // updateAlarmsListB();
-}
+//        listB->addItem(alarm.getTimeAlarm().toString());
+//    }
+//    addWindowAlarm->close();
+//    //timersSort();
+//    //if(timers.empty()){
+//        //mainTimerLbl->setText("00:00:00");
+//        //mainTimerDescriptionLbl->setText(" ");
+//   // } else {
+//       // mainTimerLbl->setText(timers[0].getTime().toString());
+//       // mainTimerDescriptionLbl->setText(timers[0].getDesc());
+//   // }
+//    //updateTimersListW();
+//   // updateAlarmsListB();
+//}
 //done1
 //
 
@@ -493,20 +508,21 @@ void MainWindow::editTimerBtnClicked()
     timersSort();
     editWindow->close();
 }
-void MainWindow::editAlarmBtnClicked(){
-    QTime timeAlarm(editTimeEditAlarm->time().hour(),editTimeEditAlarm->time().minute(),editTimeEditAlarm->time().second());
+//void MainWindow::editAlarmBtnClicked(){
+//    QTime timeAlarm(editTimeEditAlarm->time().hour(),editTimeEditAlarm->time().minute(),editTimeEditAlarm->time().second());
 
-    alarms[listB->currentRow()].setTimeAlarm(timeAlarm);
-    alarms[listB->currentRow()].setDescAlarm(editDescEditAlarm->toPlainText());
-    //timersSort();
-    listB->item(listB->currentRow())->setText(editTimeEditAlarm->text());
-    //bufferAlarm.setTimeAlarm(timeAlarm);
-   // bufferAlarm.setDescAlarm(editDescEditAlarm->toPlainText());
-   listB->clearSelection();
-    editWindowAlarm->close();
-}
+//    alarms[listB->currentRow()].setTimeAlarm(timeAlarm);
+//    alarms[listB->currentRow()].setDescAlarm(editDescEditAlarm->toPlainText());
+//    //timersSort();
+//    listB->item(listB->currentRow())->setText(editTimeEditAlarm->text());
+//    //bufferAlarm.setTimeAlarm(timeAlarm);
+//   // bufferAlarm.setDescAlarm(editDescEditAlarm->toPlainText());
+//   listB->clearSelection();
+//    editWindowAlarm->close();
+//}
 //done2
 
+//done4
 void MainWindow::deleteTimer()
 {
     if(listW->currentRow()>=0){
@@ -534,31 +550,31 @@ void MainWindow::deleteTimer()
 
 
 }
+//done4
+//void MainWindow::deleteAlarm(){
+//    if(listB->currentRow()>=0){
 
-void MainWindow::deleteAlarm(){
-    if(listB->currentRow()>=0){
+//        qDebug()<<alarms.size();
 
-        qDebug()<<alarms.size();
-
-        if(alarms.size()==1){
-            listB->clearSelection();
-          //  qDebug()<<"durak1";
-            deleteAllAlarms();
-        }
-        if(!alarms.empty() && alarms.size()!=1){
-           // qDebug()<<"durak";
-            listB->takeItem(listB->currentRow());
-            alarms.removeAt(listB->currentRow());
-        }
+//        if(alarms.size()==1){
+//            listB->clearSelection();
+//          //  qDebug()<<"durak1";
+//            deleteAllAlarms();
+//        }
+//        if(!alarms.empty() && alarms.size()!=1){
+//           // qDebug()<<"durak";
+//            listB->takeItem(listB->currentRow());
+//            alarms.removeAt(listB->currentRow());
+//        }
 
 
-    }
-    else{
-        QMessageBox::warning(this,tr("Choose the alarm"),tr("Please, choose the Alarm in Alarms tab"));
-        return;
-    }
-}
-
+//    }
+//    else{
+//        QMessageBox::warning(this,tr("Choose the alarm"),tr("Please, choose the Alarm in Alarms tab"));
+//        return;
+//    }
+//}
+//done4
 void MainWindow::deleteAllTimers()
 {
     if(timers.empty()){
@@ -576,21 +592,21 @@ void MainWindow::deleteAllTimers()
     }
 
 }
-
-void MainWindow::deleteAllAlarms(){
-    if(alarms.empty()){
-        QMessageBox::warning(this,tr("Alarms is empty"),tr("Alarms is empty"));
-        return;
-    }
-    else{
-        alarms.clear();
-        listB->blockSignals(true);
-        listB->clear();
-        listB->blockSignals(false);
-        mainTimerLbl->setText("00:00:00");
-        //mainTimerDescriptionLbl->setText("\0");
-    }
-}
+//done4
+//void MainWindow::deleteAllAlarms(){
+//    if(alarms.empty()){
+//        QMessageBox::warning(this,tr("Alarms is empty"),tr("Alarms is empty"));
+//        return;
+//    }
+//    else{
+//        alarms.clear();
+//        listB->blockSignals(true);
+//        listB->clear();
+//        listB->blockSignals(false);
+//        mainTimerLbl->setText("00:00:00");
+//        //mainTimerDescriptionLbl->setText("\0");
+//    }
+//}
 
 //void MainWindow::settingsWindowSlot()
 //{
@@ -652,9 +668,10 @@ void MainWindow::updateAlarmsListB()
 {
     listB->clear();
     for(int i = 0; i < alarms.size(); i++){
-        listB->addItem(alarms[i].getTimeAlarm().toString());
+        listB->addItem(alarms[i].getTime().toString());
     }
 }
+
 void MainWindow::showDescription(){
     if(listW->count()>0 && timers.size()>0){
         mainTimerDescriptionLbl->setText("\0");
@@ -669,7 +686,7 @@ void MainWindow::showDescriptionAlarm(){
    // listB->setEnabled(true);
     mainTimerDescriptionLbl->setText("\0");
 
-      mainTimerDescriptionLbl->setText(alarms[listB->currentRow()].getDescAlarm());
+      mainTimerDescriptionLbl->setText(alarms[listB->currentRow()].getDesc());
       listW->clearFocus();
 
        listB->clearSelection();
@@ -684,7 +701,7 @@ void MainWindow::showDescriptionAlarm(){
 
 
 
-
+//done3
 void MainWindow::timeoutwindow(QString description,QString paths){
 //    this->description=description;
 //    this->paths=paths;

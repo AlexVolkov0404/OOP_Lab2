@@ -20,10 +20,11 @@ private:
     bool doNotDisturb;
 public:
     Settings();
-
-public slots:
     void setsettingswindow();
+public slots:
+
      bool infoOk();
+     void showSettingsWindow();
 };
 
 #endif // SETTINGS_H

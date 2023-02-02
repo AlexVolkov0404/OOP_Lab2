@@ -11,8 +11,7 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QString>
-#include "timer.h"
-class timeoutwindow : Timer
+class timeoutwindow : public QObject
 {
 private:
     QWidget *signalWindow;
@@ -26,8 +25,9 @@ private:
 
 
 public:
-   timeoutwindow(QString description, QString paths);
+   timeoutwindow();
    void signalsound(QString description, QString paths);
+   void sound();
 
 };
 

@@ -16,7 +16,8 @@ SOURCES += \
     settings.cpp \
     timeoutwindow.cpp \
     timer.cpp \
-    timerconstructor.cpp
+    timerconstructor.cpp \
+    timerdelete.cpp
 
 HEADERS += \
     alarm.h \
@@ -25,7 +26,8 @@ HEADERS += \
     settings.h \
     timeoutwindow.h \
     timer.h \
-    timerconstructor.h
+    timerconstructor.h \
+    timerdelete.h
 
 FORMS += \
     mainwindow.ui

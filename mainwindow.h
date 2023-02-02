@@ -6,6 +6,7 @@
 #include "timeoutwindow.h"
 #include "settings.h"
 #include "timerconstructor.h"
+#include "timerdelete.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -67,7 +68,10 @@ private:
 
     EditConstructor econstructor;
     TimerConstructor constructr;
-    QList<Alarm> alarms;
+    TimerDelete delet;
+
+    QList<Timer> alarms;
+    //QList<Alarm> alarms;
     //Add window
     QWidget *addWindow;
     QWidget *addWindowAlarm;
@@ -125,18 +129,18 @@ private:
     QPushButton *timeoutOKBtn;
     QVBoxLayout *vbox;
     QMediaPlayer *player;
-
+    timeoutwindow wind;
 
 private slots:
-    void addTimerBtnClicked();
-    void addAlarmBtnClicked();
+   void addTimerBtnClicked();
+   // void addAlarmBtnClicked();
     void stopTimer();
     void editTimerBtnClicked();
-    void editAlarmBtnClicked();
+//    void editAlarmBtnClicked();
     void deleteTimer();
-    void deleteAlarm();
+//    void deleteAlarm();
     void deleteAllTimers();
-    void deleteAllAlarms();
+//    void deleteAllAlarms();
     void showDescription();
     void showDescriptionAlarm();
    // void updateTimersListW();
