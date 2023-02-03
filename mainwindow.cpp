@@ -69,13 +69,13 @@ void MainWindow::timerEvent(QTimerEvent *e)
     figure= QString::number(timers.size());
     QPixmap pixmap(25,25);
     pixmap.fill(Qt::transparent);
-    QPainter painter(&pixmap);    
+    QPainter painter(&pixmap);
     painter.drawPixmap(0, 0,25,25, QPixmap(":/Resources/clock.jpg"));
     painter.setPen(QPen(Qt::white, 1, Qt::SolidLine, Qt::SquareCap));
     painter.setBrush(QBrush(Qt::red));
     if(timers.size()>0){
         painter.drawEllipse(10, 10, 16, 16);
-        QFont font1("MS Shell Dlg 2", 8);       
+        QFont font1("MS Shell Dlg 2", 8);
         painter.setFont(font1);
         painter.drawText(QRect(10, 13, 18, 13), Qt::AlignCenter, figure);
     }
@@ -84,7 +84,10 @@ void MainWindow::timerEvent(QTimerEvent *e)
     setWindowIcon(QIcon(pixmap));
 
 
+
     timelbl->setText(QTime::currentTime().toString());
+    settings.sortInfo(timers);
+    settings.sortInfo(alarms);
     if(timers.size() > 0 && listW->count()>0){
         for(int i = 0; i < timers.size(); i++){
             timers[i].setTime(timers[i].getTime().addMSecs(-500));
@@ -222,6 +225,16 @@ void MainWindow::setToolBar()
 
 
 }
+
+
+
+
+
+
+
+
+
+
 //done1
 void MainWindow::addTimer()
 {

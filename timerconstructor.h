@@ -40,7 +40,7 @@ public:
 public slots:
   void showConstructorWindow(QList<Timer> *timers, QListWidget *listW);
   void addNewTimer(QList<Timer> *timers, QListWidget *listW);
-  void timersort(QList<Timer> &timers);
+ // void timersort(QList<Timer> &timers);
 };
 
 #endif // TIMERCONSTRUCTOR_H

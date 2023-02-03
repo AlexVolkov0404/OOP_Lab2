@@ -50,18 +50,18 @@ void TimerConstructor::addNewTimer(QList<Timer> *timers,QListWidget *listW){
         listW->addItem(timer.getTime().toString());
     }
     addWindow->close();
-    timersort(*timers);
+    //timersort(*timers);
 }
-void TimerConstructor::timersort(QList<Timer> &timers){
-    if(timers.size() > 1) {
-        int i, j;
-        for (i = 0; i < timers.size()-1; i++)
-        for (j = 0; j < timers.size()-i-1; j++){
-            if (timers[j].getTime() > timers[j+1].getTime()){
-                Timer tmp = timers[j];
-                timers[j] = timers[j+1];
-                timers[j+1] = tmp;
-            }
-        }
-    } else return;
-}
+//void TimerConstructor::timersort(QList<Timer> &timers){
+//    if(timers.size() > 1) {
+//        int i, j;
+//        for (i = 0; i < timers.size()-1; i++)
+//        for (j = 0; j < timers.size()-i-1; j++){
+//            if (timers[j].getTime() > timers[j+1].getTime()){
+//                Timer tmp = timers[j];
+//                timers[j] = timers[j+1];
+//                timers[j+1] = tmp;
+//            }
+//        }
+//    } else return;
+//}

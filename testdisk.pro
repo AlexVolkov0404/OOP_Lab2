@@ -11,9 +11,11 @@ CONFIG += c++17
 SOURCES += \
     alarm.cpp \
     editconstructor.cpp \
+    icon.cpp \
     main.cpp \
     mainwindow.cpp \
     settings.cpp \
+    sorting.cpp \
     timeoutwindow.cpp \
     timer.cpp \
     timerconstructor.cpp \
@@ -22,8 +24,10 @@ SOURCES += \
 HEADERS += \
     alarm.h \
     editconstructor.h \
+    icon.h \
     mainwindow.h \
     settings.h \
+    sorting.h \
     timeoutwindow.h \
     timer.h \
     timerconstructor.h \

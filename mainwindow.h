@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "timerconstructor.h"
 #include "timerdelete.h"
+#include "icon.h"
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -69,7 +70,7 @@ private:
     EditConstructor econstructor;
     TimerConstructor constructr;
     TimerDelete delet;
-
+    Icon icon;
     QList<Timer> alarms;
     //QList<Alarm> alarms;
     //Add window

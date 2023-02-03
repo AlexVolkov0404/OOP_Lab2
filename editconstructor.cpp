@@ -49,7 +49,7 @@ void EditConstructor::editTimerInformation(QList<Timer> &timers){
 
     timers[positionToEdit].setTime(time);
     timers[positionToEdit].setDesc(editDescEdit->toPlainText());
-    constructor.timersort(timers);
+    //constructor.timersort(timers);
     editWindow->close();
 }
 void EditConstructor::checker(QList<Timer> &timers, QListWidget *listW){
