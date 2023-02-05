@@ -66,94 +66,28 @@ private:
     QListWidget *listW;
     QListWidget *listB;
     QList<Timer> timers;
-
     EditConstructor econstructor;
     TimerConstructor constructr;
     TimerDelete delet;
     Icon icon;
     QList<Timer> alarms;
-    //QList<Alarm> alarms;
-    //Add window
-    QWidget *addWindow;
-    QWidget *addWindowAlarm;
-    QSpinBox*amountTimer;
-    QSpinBox*amountTimerAlarm;
-    QLabel *addTimerLbl;
-    QLabel *addAlarmLbl;
-    QLabel *addDescLbl;
-    QLabel *addDescLblAlarm;
-    QLabel *addCountLbl;
-    QLabel *addCountLblAlarm;
-    QLabel *addPathsLbl;
-    QLabel *addPathsLblAlarm;
-    QTimeEdit *addTimeEdit;
-    QTimeEdit *addTimeEditAlarm;
-    QTextEdit *addTextEdit;
-    QTextEdit *addTextEditAlarm;
-    QTextEdit *addCountTextEdit;
-    QTextEdit *addCountTextEditAlarm;
-    QTextEdit *addPathsTextEdit;
-    QTextEdit *addPathsTextEditAlarm;
-    void addTimer();
-    void addAlarm();
-    //Edit Window
-    QWidget *editWindow;
-    QWidget *editWindowAlarm;
-    QLabel *editTimeLbl;
-    QLabel *editTimeLblAlarm;
-    QLabel *editDescLbl;
-    QLabel *editDescLblAlarm;
-    QTimeEdit *editTimeEdit;
-    QTimeEdit *editTimeEditAlarm;
-    QTextEdit *editDescEdit;
-    QTextEdit *editDescEditAlarm;
-    QPushButton *editTimerBtn;
-    QPushButton *editTimerBtnAlarm;
-    void toEditWindow();
-    void toEditWindowAlarm();
     Timer buffer;
-    Alarm bufferAlarm;
+//    Alarm bufferAlarm;
     QString tmp;
-    QString tmpAlarm;
+//    QString tmpAlarm;
     QString curTime;
-    QString curTimeAlarm;
+//    QString curTimeAlarm;
     int positionToEdit;
     int positionToEditAlarm;
-    Settings settings;
-    //To Stop
-    QVector<int> stoppedTimersPositions;
-    QVector<int> stoppedAlarmsPositions;
-
-    QWidget *signalWindow;
-    QLabel *timeoutLbl;
-    QTextEdit *timeoutDescLbl;
-    QPushButton *timeoutOKBtn;
-    QVBoxLayout *vbox;
-    QMediaPlayer *player;
+    Settings settings;   
     timeoutwindow wind;
 
 private slots:
-   void addTimerBtnClicked();
-   // void addAlarmBtnClicked();
-    void stopTimer();
-    void editTimerBtnClicked();
-//    void editAlarmBtnClicked();
-    void deleteTimer();
-//    void deleteAlarm();
-    void deleteAllTimers();
-//    void deleteAllAlarms();
     void showDescription();
     void showDescriptionAlarm();
-   // void updateTimersListW();
+
 private:
     void timerEvent(QTimerEvent *e);
-    void alarmEvent(QTimerEvent *e);
-    void timersSort();
-    void updateTimersListW();
-    void updateAlarmsListB();
-    void timeoutwindow(QString description,QString paths);
-
-
 };
 
 #endif // MAINWINDOW_H

@@ -4,6 +4,7 @@
 #include "qtestcase.h"
 #include "testalarm.h"
 #include "testdel.h"
+#include "testsorts.h"
 #include "testtimer.h"
 
 
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
     QTest::qExec(new TestAlarm, argc, argv);
    // QTest::qExec(new TestTimerConstructor, argc, argv);
     QTest::qExec(new TestDel, argc, argv);
+     QTest::qExec(new TestSorts, argc, argv);
 
     return a.exec();
 

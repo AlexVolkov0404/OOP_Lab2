@@ -45,10 +45,10 @@ void TimerConstructor::addNewTimer(QList<Timer> *timers,QListWidget *listW,int h
     QTime time(h,min,sec);
     Timer timer(time,Desc,paths);
     //listW->clear();
-//    for(int i = 0; i < amountTimer->value(); i++){
+    for(int i = 0; i < amountTimer->value(); i++){
         timers->insert(timers->size(),timer);
         listW->addItem(timer.getTime().toString());
-//    }
+    }
     addWindow->close();
     //timersort(*timers);
 }

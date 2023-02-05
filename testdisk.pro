@@ -18,6 +18,7 @@ SOURCES += \
     sorting.cpp \
     testalarm.cpp \
     testdel.cpp \
+    testsorts.cpp \
     testtimer.cpp \
     timeoutwindow.cpp \
     timer.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     sorting.h \
     testalarm.h \
     testdel.h \
+    testsorts.h \
     testtimer.h \
     timeoutwindow.h \
     timer.h \
