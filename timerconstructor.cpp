@@ -37,31 +37,19 @@ void TimerConstructor::showConstructorWindow(QList<Timer> *timers,QListWidget *l
     addWindow->layout()->addWidget(addPathsTextEdit);
     addWindow->layout()->addWidget(addBtn);
 
-    connect(addBtn, &QPushButton::clicked,this, [=](){addNewTimer(timers,listW);});
+    connect(addBtn, &QPushButton::clicked,this, [=](){addNewTimer(timers,listW,addTimeEdit->time().hour(),addTimeEdit->time().minute(),addTimeEdit->time().second(),addTextEdit->toPlainText(),addPathsTextEdit->toPlainText());});
     //connect(addBtn, &QPushButton::clicked, this, &MainWindow::addTimerBtnClicked);
     addWindow->show();
 }
-void TimerConstructor::addNewTimer(QList<Timer> *timers,QListWidget *listW){
-    QTime time(addTimeEdit->time().hour(),addTimeEdit->time().minute(),addTimeEdit->time().second());
-    Timer timer(time,addTextEdit->toPlainText(),addPathsTextEdit->toPlainText());
+void TimerConstructor::addNewTimer(QList<Timer> *timers,QListWidget *listW,int h,int min,int sec,QString Desc,QString paths){
+    QTime time(h,min,sec);
+    Timer timer(time,Desc,paths);
     //listW->clear();
-    for(int i = 0; i < amountTimer->value(); i++){
+//    for(int i = 0; i < amountTimer->value(); i++){
         timers->insert(timers->size(),timer);
         listW->addItem(timer.getTime().toString());
-    }
+//    }
     addWindow->close();
     //timersort(*timers);
 }
-//void TimerConstructor::timersort(QList<Timer> &timers){
-//    if(timers.size() > 1) {
-//        int i, j;
-//        for (i = 0; i < timers.size()-1; i++)
-//        for (j = 0; j < timers.size()-i-1; j++){
-//            if (timers[j].getTime() > timers[j+1].getTime()){
-//                Timer tmp = timers[j];
-//                timers[j] = timers[j+1];
-//                timers[j+1] = tmp;
-//            }
-//        }
-//    } else return;
-//}
+

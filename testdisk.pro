@@ -1,4 +1,4 @@
-QT       += core gui multimedia
+QT       += core gui multimedia testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +16,9 @@ SOURCES += \
     mainwindow.cpp \
     settings.cpp \
     sorting.cpp \
+    testalarm.cpp \
+    testdel.cpp \
+    testtimer.cpp \
     timeoutwindow.cpp \
     timer.cpp \
     timerconstructor.cpp \
@@ -28,6 +31,9 @@ HEADERS += \
     mainwindow.h \
     settings.h \
     sorting.h \
+    testalarm.h \
+    testdel.h \
+    testtimer.h \
     timeoutwindow.h \
     timer.h \
     timerconstructor.h \
@@ -54,3 +60,4 @@ RESOURCES += \
     resourses.qrc
 
 STATECHARTS +=
+

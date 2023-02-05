@@ -30,13 +30,12 @@ void EditConstructor::showEditWindow(QList<Timer> *timers,QListWidget *listW){
         vbox->addWidget(editDescEdit);
         vbox->addWidget(editTimerBtn);
 
-       // connect(editTimerBtn, &QPushButton::clicked, this, &MainWindow::editTimerBtnClicked);
+
         connect(editTimerBtn, &QPushButton::clicked, this,[=](){editTimerInformation(*timers);});
         editWindow->setLayout(vbox);
         editWindow->show();
     }
-    else{
-        //QMessageBox::warning(this,tr("Choose the timer"),tr("Please, choose the timer in Timers tab"));
+    else{       
         message.setText("Choose the timer!");
         message.setIcon(QMessageBox::Warning);
         message.setWindowTitle("Caution");
@@ -55,17 +54,14 @@ void EditConstructor::editTimerInformation(QList<Timer> &timers){
 void EditConstructor::checker(QList<Timer> &timers, QListWidget *listW){
     if(!timers.empty()){
         tmp = listW->selectedItems().first()->text();
-        if(tmp == "\0"){
-          // QMessageBox::warning(this,tr("Choose the timer"),tr("Please, choose the timer in Timers tab"));
+        if(tmp == "\0"){          
            message.setText("Choose the timer!");
            message.setIcon(QMessageBox::Warning);
            message.setWindowTitle("Caution");
-           message.exec();
-           // message.warning(this,tr("Choose the timer"),tr("Please, choose the timer in Timers tab"));
+           message.exec();          
             return;
         }
-    } else {
-       // QMessageBox::warning(this,tr("Timers is empty"),tr("Timers is empty"));
+    } else {       
         message.setText("Timers is empty!");
         message.setIcon(QMessageBox::Warning);
         message.setWindowTitle("Caution");

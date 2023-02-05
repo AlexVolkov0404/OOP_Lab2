@@ -6,11 +6,6 @@
 
 MainWindow::MainWindow()
 {
-//    doNotLbl = new QLabel("Do not disturbe mode");
-//    doNotCheckBox = new QCheckBox();
-//    doNotCheckBox->setChecked(false);
-//    doNotDisturb = false;
-
     tmp = "\0";
     temp.setHMS(0,0,0);  
     setToolBar();
@@ -50,8 +45,7 @@ MainWindow::MainWindow()
     listB->setGeometry(270,225,200,200);
 
 
-    connect(listW, &QListWidget::currentRowChanged, this, &MainWindow::showDescription);
-   // listW->clearSelection();
+    connect(listW, &QListWidget::currentRowChanged, this, &MainWindow::showDescription);  
     connect(listB, &QListWidget::currentRowChanged, this, &MainWindow::showDescriptionAlarm);
     startTimer(1000);
 
@@ -125,11 +119,7 @@ void MainWindow::timerEvent(QTimerEvent *e)
         for(int i = 0; i < alarms.size(); i++){
             if(alarms[i].getTime().hour() == QTime::currentTime().hour()&&alarms[i].getTime().minute() == QTime::currentTime().minute()&&alarms[i].getTime().second() == QTime::currentTime().second()){
                 wind.signalsound(alarms[i].getDesc(),alarms[i].getPaths());
-               if(settings.infoOk()==false) wind.sound();
-                //timeoutWindowAlarm();
-                //timeoutwindow wind(alarms[0].getDesc(),alarms[0].getPaths());
-                //if(settings.infoOk()==false)  wind.signalsound();
-                //stoppedAlarmsPositions.append(i);
+               if(settings.infoOk()==false) wind.sound();                
                 alarms.removeAt(i);
                 QListWidgetItem *it2 = listB->takeItem(i);
                    delete it2;

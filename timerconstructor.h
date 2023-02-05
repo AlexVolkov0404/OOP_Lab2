@@ -39,7 +39,7 @@ public:
 
 public slots:
   void showConstructorWindow(QList<Timer> *timers, QListWidget *listW);
-  void addNewTimer(QList<Timer> *timers, QListWidget *listW);
+  void addNewTimer(QList<Timer> *timers, QListWidget *listW, int h, int min, int sec, QString Desc, QString paths);
  // void timersort(QList<Timer> &timers);
 };
 
