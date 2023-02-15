@@ -33,3 +33,4 @@ void TestTimer::setPaths(){
     timer.setPaths("C:/Users/Sasha/Documents/testdisk");
     QCOMPARE(timer.getPaths(),"C:/Users/Sasha/Documents/testdisk");
 }
+//QTEST_MAIN(TestTimer)
